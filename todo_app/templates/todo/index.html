@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex justify-between max-w-2xl mx-auto border-b border-b-slate-600 mb-8 pb-2">
+    <h1 class="text-2xl font-bold text-center">
+        {% block title %}My Tasks List{% endblock %}
+    </h1>
+    <a hx-swap="transition:true" class="badge badge-info p-4 hover:scale-[1.1]"
+        href="{{ url_for('todo_views.create') }}">
+        New
+    </a>
+</div>
+<section class="overflow-auto max-w-2xl max-h-96 mx-auto bg-slate-600 rounded-lg shadow-xl">
+    <table class="table table-zebra">
+        <!-- head -->
+        <thead class="bg-slate-700">
+            <tr>
+                <th></th>
+                <th>Tasks</th>
+                <th>Status</th>
+                <th class="text-center">Options</th>
+            </tr>
+        </thead>
+        {% if not todos == [] %}
+        <tbody>
+            {% for todo in todos %}
+            <tr>
+                <th>{{ todo.id }}</th>
+                <td>{{ todo.title }}</td>
+                <td>
+                    {% if todo.status %}
+                    ✅
+                    {% else %}
+                    ❌
+                    {% endif %}
+                </td>
+                <td class="flex justify-center gap-2">
+                    <a hx-swap="transition:true" href="{{ url_for('todo_views.update', id = todo.id) }}"
+                        class="badge badge-primary p-3 hover:scale-[1.1]">
+                        Edit
+                    </a>
+                    <button hx-delete="{{ url_for('todo_views.delete', id = todo.id) }}"
+                        hx-confirm="Are you sure you want to delete the task with ID #{{ todo.id }}?"
+                        hx-swap="outerHTML" hx-target="closest tr" class="badge badge-error p-3 hover:scale-[1.1]">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody>
+            <tr>
+                <td colspan="4" align="center">
+                    You do not have anything to do
+                </td>
+            </tr>
+        </tbody>
+        {% endif %}
+    </table>
+</section>
+{% endblock %}
